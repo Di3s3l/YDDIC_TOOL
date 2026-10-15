@@ -2,7 +2,7 @@
 *& Report YDDIC_TOOL                                           v0.3
 *& Export of SAP repository objects (table fields, function group,
 *& program, class sources) to a file on the PC.
-*& Transaction YDDIC_TOOL. Design: doc/documentazione.md
+*& Transaction YDDIC_TOOL. Design: docs/technical-notes.md
 *&---------------------------------------------------------------------*
 REPORT yddic_tool.
 

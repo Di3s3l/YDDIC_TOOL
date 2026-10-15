@@ -22,7 +22,7 @@ Pensato per dare a chi analizza o sviluppa senza accesso diretto al sistema (ad 
 - Output UTF-8 con BOM
 - Modulare: ogni tipo di oggetto è una classe locale in un proprio include; per aggiungere un tipo bastano un include e una riga nel registro
 
-Successore di [Y_EXPORT_DICTABLE](https://github.com/Di3s3l/Y_EXPORT_DICTABLE), di cui comprende l'export delle tabelle.
+Successore di `Y_EXPORT_DICTABLE`, di cui comprende l'export delle tabelle.
 
 ---
 

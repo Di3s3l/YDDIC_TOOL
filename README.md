@@ -22,7 +22,7 @@ Built to give whoever analyzes or develops without direct system access (for exa
 - UTF-8 output with BOM
 - Modular: each object type is a local class in its own include; adding a type needs one include and one registry line
 
-Successor of [Y_EXPORT_DICTABLE](https://github.com/Di3s3l/Y_EXPORT_DICTABLE), whose table export it includes.
+Successor of `Y_EXPORT_DICTABLE`, whose table export it includes.
 
 ---
 

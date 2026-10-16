@@ -1,6 +1,7 @@
 *&---------------------------------------------------------------------*
 *& Include YDDIC_TOOL_SCR
 *& Selection screen and its controller.
+*& Copyright (c) 2026 Di3s3l - MIT License (see LICENSE)
 *&---------------------------------------------------------------------*
 TABLES sscrfields.
 

@@ -1,6 +1,7 @@
 *&---------------------------------------------------------------------*
 *& Include YDDIC_TOOL_X_TABL — module TABL
 *& Table/structure fields -> TABL_<name>.csv
+*& Copyright (c) 2026 Di3s3l - MIT License (see LICENSE)
 *&---------------------------------------------------------------------*
 CLASS lcl_exp_tabl DEFINITION INHERITING FROM lcl_exporter_base FINAL.
   PUBLIC SECTION.

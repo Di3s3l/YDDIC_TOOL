@@ -1,6 +1,7 @@
 *&---------------------------------------------------------------------*
 *& Include YDDIC_TOOL_REG
 *& Module registry: the only list of modules (order = listbox order).
+*& Copyright (c) 2026 Di3s3l - MIT License (see LICENSE)
 *&---------------------------------------------------------------------*
 CLASS lcl_registry DEFINITION FINAL.
   PUBLIC SECTION.

@@ -3,6 +3,7 @@
 *& Export of SAP repository objects (table fields, function group,
 *& program, class sources) to a file on the PC.
 *& Transaction YDDIC_TOOL. Design: docs/technical-notes.md
+*& Copyright (c) 2026 Di3s3l - MIT License (see LICENSE)
 *&---------------------------------------------------------------------*
 REPORT yddic_tool.
 

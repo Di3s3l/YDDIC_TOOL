@@ -2,6 +2,7 @@
 *& Include YDDIC_TOOL_TEST
 *& ABAP Unit tests of the logic that does not read the system
 *& (Ctrl+Shift+F10 in the editor).
+*& Copyright (c) 2026 Di3s3l - MIT License (see LICENSE)
 *&---------------------------------------------------------------------*
 
 CLASS ltc_source_reader DEFINITION FINAL FOR TESTING

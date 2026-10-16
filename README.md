@@ -2,7 +2,7 @@
 
 <img src="assets/sap-s4hana-logo.png" alt="SAP S/4HANA" width="200"/>
 
-![Version](https://img.shields.io/badge/version-0.5-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen)
+![Version](https://img.shields.io/badge/version-0.5-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 🇮🇹 [Versione italiana](README.it.md)
 
@@ -46,4 +46,4 @@ The [`docs/`](docs/README.md) folder contains installation instructions, usage g
 
 Copyright © 2026 <a href="https://enz.ovh" target="_blank">Di3s3l</a>
 
-Personal use and internal corporate use permitted. Redistribution or publication of modified versions requires attribution to the original author.
+Released under the [MIT License](LICENSE): free to use, modify and redistribute, also commercially, provided the copyright notice and the license text are kept in all copies or substantial portions.

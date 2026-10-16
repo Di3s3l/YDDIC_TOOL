@@ -1,6 +1,7 @@
 *&---------------------------------------------------------------------*
 *& Include YDDIC_TOOL_TOP
 *& Types, exception class (definition), module contract.
+*& Copyright (c) 2026 Di3s3l - MIT License (see LICENSE)
 *&---------------------------------------------------------------------*
 
 TYPES ty_type_id TYPE c LENGTH 4.

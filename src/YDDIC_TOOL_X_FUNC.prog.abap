@@ -1,6 +1,7 @@
 *&---------------------------------------------------------------------*
 *& Include YDDIC_TOOL_X_FUNC — module FUNC
 *& Function module -> function group source, FUNC_<module>.txt
+*& Copyright (c) 2026 Di3s3l - MIT License (see LICENSE)
 *&---------------------------------------------------------------------*
 CLASS lcl_exp_func DEFINITION INHERITING FROM lcl_exporter_base FINAL.
   PUBLIC SECTION.

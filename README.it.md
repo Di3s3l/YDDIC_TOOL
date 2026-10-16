@@ -2,7 +2,7 @@
 
 <img src="assets/sap-s4hana-logo.png" alt="SAP S/4HANA" width="200"/>
 
-![Versione](https://img.shields.io/badge/versione-0.3-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen)
+![Versione](https://img.shields.io/badge/versione-0.4-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen)
 
 🇬🇧 [English version](README.md)
 
@@ -16,7 +16,7 @@ Pensato per dare a chi analizza o sviluppa senza accesso diretto al sistema (ad 
 
 - Una transazione, quattro tipi di oggetto: tabella/struttura, modulo funzione, programma, classe/interfaccia
 - CSV con indicatore di chiave, metadati DDIC e percorso degli include di ogni campo (include annidati risolti)
-- Sorgenti completi di tutti gli include, senza troncamento delle righe; gli include non leggibili sono elencati nella testata del file
+- Sorgenti completi di tutti gli include, anche annidati, seguiti tramite le istruzioni `INCLUDE`; nessun troncamento delle righe; gli include non leggibili o inesistenti sono elencati nella testata del file
 - Filtro facoltativo per parola chiave sui sorgenti (caratteri jolly, esclusioni) → file `_GREP`
 - Help F4 sul nome dell'oggetto, per tipo
 - Output UTF-8 con BOM

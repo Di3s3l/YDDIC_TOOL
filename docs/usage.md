@@ -35,12 +35,22 @@ POSID;;PS_POSID;CHAR;24;0;WBS Element;PRPS_INC
 ```
 
 - `KEY` = `X` for primary key fields.
-- `INCLUDE` = include structure the field comes from, empty for own fields; nested includes as a path `OUTER>INNER`.
-- Descriptions in the logon language; a `;` in a description becomes `,`.
+- `INCLUDE` = include structure the field comes from, empty for own fields; nested includes as a path `OUTER>INNER`; `?` = unknown (include map not readable, popup shown).
+- Descriptions in the logon language; a description containing `;` or `"` is quoted, with `"` doubled (RFC 4180).
 
 ### Sources
 
-A header of `*` lines (object, main program, system, date, includes read / not readable, filter), then one line per source line: include name (40 chars), line number (6 chars), source text.
+A header of `*` lines, then one line per source line: include name (40 chars), line number (6 chars), source text.
+
+| Header line | Meaning |
+|-------------|---------|
+| `Includes read: n of m` | Includes read out of all those found |
+| `Found by scan` | Includes reached only through an `INCLUDE` statement (not listed by the system for the main program) |
+| `Not readable` | Listed by the system, source not readable |
+| `Not found` | Named by an `INCLUDE` statement, no source exists |
+| `Filter`, `Lines matched: n of m` | Keywords used and lines kept out of all lines read |
+
+Includes are taken from the system list for the main program, then every `INCLUDE` statement in the sources read is followed until no new include appears.
 
 ## Keyword Filter
 
@@ -48,6 +58,8 @@ A header of `*` lines (object, main program, system, date, includes read / not r
 - Words entered as **exclusions** (sign E) drop the lines that contain them.
 - `*` and `+` work as wildcards (`CALL*BAPI`).
 - Examples: `AUTHORITY-CHECK` in a program; `CONSTANTS` in a class.
+- No matching line is not an error: the `_GREP` file is written with the header only and `Lines matched: 0 of n`.
+- The filter keeps single lines: use it to locate code, not as the basis for a full analysis.
 
 ## Messages
 
@@ -56,7 +68,7 @@ A header of `*` lines (object, main program, system, date, includes read / not r
 | `Enter an object name.` | Object name empty |
 | `... not found ...` | Object missing (or, for tables and programs, not active) |
 | `Missing authorization S_DEVELOP (display) for ...` | Display authorization on development objects missing |
-| `No source lines found or matching the filter: ...` | No lines, or none matching the keywords |
+| `No source lines found: ...` | No source could be read |
 | `Enter a valid target directory.` | Directory empty or invalid |
 | `File download failed: ...` | The PC refused the file (missing folder, permissions, SAP GUI security prompt denied) |
 | `File saved: <file> (<n> lines)` | Done |

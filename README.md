@@ -2,7 +2,7 @@
 
 <img src="assets/sap-s4hana-logo.png" alt="SAP S/4HANA" width="200"/>
 
-![Version](https://img.shields.io/badge/version-0.3-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen)
+![Version](https://img.shields.io/badge/version-0.4-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen)
 
 🇮🇹 [Versione italiana](README.it.md)
 
@@ -16,7 +16,7 @@ Built to give whoever analyzes or develops without direct system access (for exa
 
 - One transaction, four object types: table/structure, function module, program, class/interface
 - CSV with key flag, DDIC metadata and the include path of each field (nested includes resolved)
-- Full sources with every include, no line truncation; unreadable includes listed in the file header
+- Full sources with every include, nested ones followed through `INCLUDE` statements; no line truncation; unreadable or missing includes listed in the file header
 - Optional keyword filter on sources (wildcards, exclusions) → `_GREP` file
 - F4 value help on the object name, per object type
 - UTF-8 output with BOM

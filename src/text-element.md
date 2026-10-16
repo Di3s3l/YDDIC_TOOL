@@ -25,14 +25,14 @@ Max length must not be shorter than the text, otherwise the text is truncated.
 | `H07` | 30 | `INCLUDE` | CSV header, column 8 |
 | `M01` | 70 | `Table/structure not found or not active:` | |
 | `M02` | 70 | `Cannot read field structure of` | |
-| `M03` | 70 | `Cannot read include structure map: INCLUDE column left empty.` | Non-blocking popup |
+| `M03` | 70 | `Cannot read include structure map: INCLUDE column set to ?.` | Non-blocking popup |
 | `M04` | 30 | `File saved:` | |
 | `M05` | 70 | `File download failed:` | |
 | `M06` | 70 | `Missing authorization S_DEVELOP (display) for` | |
 | `M07` | 70 | `Function module not found:` | |
 | `M08` | 70 | `Program not found or not active:` | |
 | `M09` | 70 | `Class/interface not found:` | |
-| `M10` | 70 | `No source lines found or matching the filter:` | |
+| `M10` | 70 | `No source lines found:` | |
 | `M11` | 70 | `Object type not registered:` | |
 | `M12` | 70 | `Enter an object name.` | |
 | `M13` | 70 | `Enter a valid target directory.` | |

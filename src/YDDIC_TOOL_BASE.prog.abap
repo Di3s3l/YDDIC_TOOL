@@ -120,15 +120,32 @@ CLASS lcl_source_reader DEFINITION FINAL.
     CLASS-METHODS filter_text
       IMPORTING it_patterns    TYPE tt_pattern
       RETURNING VALUE(rv_text) TYPE string.
+
+    "! Include named by an INCLUDE statement on this line, initial if none
+    CLASS-METHODS included_name
+      IMPORTING iv_line        TYPE string
+      RETURNING VALUE(rv_name) TYPE progname.
+
+    CLASS-METHODS add_to_list
+      IMPORTING iv_name TYPE csequence
+      CHANGING  cv_list TYPE string.
 ENDCLASS.
 
 CLASS lcl_source_reader IMPLEMENTATION.
   METHOD read.
     DATA: lt_includes TYPE STANDARD TABLE OF progname WITH EMPTY KEY,
+          lt_seen     TYPE HASHED TABLE OF progname WITH UNIQUE KEY table_line,
           lt_source   TYPE string_table,
           lt_body     TYPE string_table,
+          lv_include  TYPE progname,
+          lv_db_count TYPE i,
+          lv_index    TYPE i,
+          lv_scanned  TYPE abap_bool,
           lv_read     TYPE i,
-          lv_skipped  TYPE string.
+          lv_total    TYPE i,
+          lv_skipped  TYPE string,
+          lv_found    TYPE string,
+          lv_missing  TYPE string.
 
     DATA(lt_patterns) = prepare_filter( it_filter ).
 
@@ -137,28 +154,54 @@ CLASS lcl_source_reader IMPLEMENTATION.
       APPENDING TABLE @lt_includes
       WHERE master = @iv_mainprog
       ORDER BY PRIMARY KEY.
+    lv_db_count = lines( lt_includes ).
+    LOOP AT lt_includes INTO lv_include.
+      INSERT lv_include INTO TABLE lt_seen.
+    ENDLOOP.
 
-    LOOP AT lt_includes INTO DATA(lv_include).
+    " D010INC misses some nested includes (of generated or enhancement
+    " includes): INCLUDE statements are followed until nothing new appears
+    WHILE lv_index < lines( lt_includes ).
+      lv_index = lv_index + 1.
+      lv_include = lt_includes[ lv_index ].
+      lv_scanned = xsdbool( lv_index > lv_db_count ).
+
       CLEAR lt_source.
       READ REPORT lv_include INTO lt_source.
       IF sy-subrc <> 0.
-        lv_skipped = COND #( WHEN lv_skipped IS INITIAL THEN CONV string( lv_include )
-                             ELSE |{ lv_skipped }, { lv_include }| ).
+        IF lv_scanned = abap_true.
+          add_to_list( EXPORTING iv_name = lv_include CHANGING cv_list = lv_missing ).
+        ELSE.
+          add_to_list( EXPORTING iv_name = lv_include CHANGING cv_list = lv_skipped ).
+        ENDIF.
         CONTINUE.
       ENDIF.
       lv_read = lv_read + 1.
+      lv_total = lv_total + lines( lt_source ).
+      IF lv_scanned = abap_true.
+        add_to_list( EXPORTING iv_name = lv_include CHANGING cv_list = lv_found ).
+      ENDIF.
 
       LOOP AT lt_source INTO DATA(lv_line).
         " Before MATCHES: its LOOP overwrites SY-TABIX
         DATA(lv_line_no) = sy-tabix.
+
+        DATA(lv_nested) = included_name( lv_line ).
+        IF lv_nested IS NOT INITIAL.
+          INSERT lv_nested INTO TABLE lt_seen.
+          IF sy-subrc = 0.
+            APPEND lv_nested TO lt_includes.
+          ENDIF.
+        ENDIF.
+
         IF lt_patterns IS NOT INITIAL AND matches( iv_line = lv_line it_patterns = lt_patterns ) = abap_false.
           CONTINUE.
         ENDIF.
         APPEND |{ lv_include WIDTH = 40 }{ lv_line_no WIDTH = 6 ALIGN = RIGHT } { lv_line }| TO lt_body.
       ENDLOOP.
-    ENDLOOP.
+    ENDWHILE.
 
-    IF lt_body IS INITIAL.
+    IF lv_total = 0.
       RAISE EXCEPTION TYPE lcx_ddic_error
         EXPORTING iv_text = |{ TEXT-m10 } { iv_mainprog }|.
     ENDIF.
@@ -168,14 +211,46 @@ CLASS lcl_source_reader IMPLEMENTATION.
     APPEND header_line( iv_label = `System`
                         iv_value = |{ sy-sysid }/{ sy-mandt }  { sy-datum DATE = ISO } { sy-uzeit TIME = ISO }  { sy-uname }| ) TO rt_lines.
     APPEND header_line( iv_label = `Includes read` iv_value = |{ lv_read } of { lines( lt_includes ) }| ) TO rt_lines.
+    IF lv_found IS NOT INITIAL.
+      APPEND header_line( iv_label = `Found by scan` iv_value = lv_found ) TO rt_lines.
+    ENDIF.
     IF lv_skipped IS NOT INITIAL.
       APPEND header_line( iv_label = `Not readable` iv_value = lv_skipped ) TO rt_lines.
     ENDIF.
+    IF lv_missing IS NOT INITIAL.
+      APPEND header_line( iv_label = `Not found` iv_value = lv_missing ) TO rt_lines.
+    ENDIF.
     IF lt_patterns IS NOT INITIAL.
       APPEND header_line( iv_label = `Filter` iv_value = filter_text( lt_patterns ) ) TO rt_lines.
+      APPEND header_line( iv_label = `Lines matched` iv_value = |{ lines( lt_body ) } of { lv_total }| ) TO rt_lines.
     ENDIF.
     APPEND `` TO rt_lines.
     APPEND LINES OF lt_body TO rt_lines.
+  ENDMETHOD.
+
+  METHOD included_name.
+    IF iv_line NS 'INCLUDE'.
+      RETURN.
+    ENDIF.
+
+    " Comment lines do not match: they start with * or "
+    FIND FIRST OCCURRENCE OF REGEX `^\s*INCLUDE\s+([A-Za-z0-9_/%<][A-Za-z0-9_/%<>=$]*)` IN iv_line
+      IGNORING CASE SUBMATCHES DATA(lv_name).
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    lv_name = to_upper( lv_name ).
+    " INCLUDE TYPE/STRUCTURE/LIKE: structures; INCLUDE METHODS: class pool
+    IF lv_name = `TYPE` OR lv_name = `STRUCTURE` OR lv_name = `LIKE` OR lv_name = `METHODS`
+       OR strlen( lv_name ) > 40.
+      RETURN.
+    ENDIF.
+    rv_name = lv_name.
+  ENDMETHOD.
+
+  METHOD add_to_list.
+    cv_list = COND #( WHEN cv_list IS INITIAL THEN iv_name ELSE |{ cv_list }, { iv_name }| ).
   ENDMETHOD.
 
   METHOD header_line.

@@ -21,6 +21,11 @@ CLASS lcl_exp_tabl DEFINITION INHERITING FROM lcl_exporter_base FINAL.
 
     METHODS header_line
       RETURNING VALUE(rv_line) TYPE string.
+
+    "! CSV field: quoted, with doubled quotes, only if needed
+    METHODS csv_text
+      IMPORTING iv_text        TYPE csequence
+      RETURNING VALUE(rv_text) TYPE string.
 ENDCLASS.
 
 CLASS lcl_exp_tabl IMPLEMENTATION.
@@ -76,10 +81,13 @@ CLASS lcl_exp_tabl IMPLEMENTATION.
     APPEND header_line( ) TO rt_lines.
 
     LOOP AT lt_dfies INTO DATA(ls_dfies) WHERE fieldname IS NOT INITIAL.
-      lv_descr = ls_dfies-fieldtext.
-      REPLACE ALL OCCURRENCES OF ';' IN lv_descr WITH ','.
+      lv_descr = csv_text( ls_dfies-fieldtext ).
 
-      DATA(lv_include) = VALUE string( lt_incl_map[ fieldname = ls_dfies-fieldname ]-include OPTIONAL ).
+      " ? = include unknown (map not readable or field not in it), never
+      " shown as an own field
+      DATA(lv_include) = COND string( WHEN line_exists( lt_incl_map[ fieldname = ls_dfies-fieldname ] )
+                                      THEN lt_incl_map[ fieldname = ls_dfies-fieldname ]-include
+                                      ELSE `?` ).
 
       DATA(lv_field) = COND string( WHEN ls_dfies-lfieldname IS NOT INITIAL THEN ls_dfies-lfieldname
                                     ELSE ls_dfies-fieldname ).
@@ -128,6 +136,13 @@ CLASS lcl_exp_tabl IMPLEMENTATION.
                         include   = concat_lines_of( table = lt_path sep = `>` ) ) INTO TABLE rt_map.
       ENDIF.
     ENDLOOP.
+  ENDMETHOD.
+
+  METHOD csv_text.
+    rv_text = iv_text.
+    IF rv_text CA |;"\r\n|.
+      rv_text = |"{ replace( val = rv_text sub = `"` with = `""` occ = 0 ) }"|.
+    ENDIF.
   ENDMETHOD.
 
   METHOD header_line.

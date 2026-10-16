@@ -35,12 +35,22 @@ POSID;;PS_POSID;CHAR;24;0;Elemento WBS;PRPS_INC
 ```
 
 - `KEY` = `X` per i campi della chiave primaria.
-- `INCLUDE` = struttura inclusa da cui arriva il campo, vuoto per i campi propri; include annidati come percorso `ESTERNO>INTERNO`.
-- Descrizioni nella lingua di accesso; un `;` nella descrizione diventa `,`.
+- `INCLUDE` = struttura inclusa da cui arriva il campo, vuoto per i campi propri; include annidati come percorso `ESTERNO>INTERNO`; `?` = sconosciuto (mappa degli include non leggibile, con popup).
+- Descrizioni nella lingua di accesso; una descrizione che contiene `;` o `"` va tra virgolette, con `"` raddoppiate (RFC 4180).
 
 ### Sorgenti
 
-Una testata di righe `*` (oggetto, programma principale, sistema, data, include letti / non leggibili, filtro), poi una riga per riga di sorgente: nome dell'include (40 caratteri), numero di riga (6 caratteri), testo.
+Una testata di righe `*`, poi una riga per riga di sorgente: nome dell'include (40 caratteri), numero di riga (6 caratteri), testo.
+
+| Riga di testata | Significato |
+|-----------------|-------------|
+| `Includes read: n of m` | Include letti su tutti quelli trovati |
+| `Found by scan` | Include raggiunti solo tramite un'istruzione `INCLUDE` (non elencati dal sistema per il programma principale) |
+| `Not readable` | Elencati dal sistema, sorgente non leggibile |
+| `Not found` | Citati da un'istruzione `INCLUDE`, sorgente inesistente |
+| `Filter`, `Lines matched: n of m` | Parole chiave usate e righe tenute su tutte quelle lette |
+
+Gli include si prendono dall'elenco del sistema per il programma principale, poi si segue ogni istruzione `INCLUDE` dei sorgenti letti finché non ne compaiono di nuovi.
 
 ## Filtro per parola chiave
 
@@ -48,6 +58,8 @@ Una testata di righe `*` (oggetto, programma principale, sistema, data, include 
 - Le parole inserite come **esclusione** (segno E) scartano le righe che le contengono.
 - `*` e `+` funzionano come caratteri jolly (`CALL*BAPI`).
 - Esempi: `AUTHORITY-CHECK` in un programma; `CONSTANTS` in una classe.
+- Nessuna riga trovata non è un errore: il file `_GREP` viene scritto con la sola testata e `Lines matched: 0 of n`.
+- Il filtro tiene righe singole: serve a individuare il codice, non come base per un'analisi completa.
 
 ## Messaggi
 
@@ -56,7 +68,7 @@ Una testata di righe `*` (oggetto, programma principale, sistema, data, include 
 | `Enter an object name.` | Object name vuoto |
 | `... not found ...` | Oggetto inesistente (o, per tabelle e programmi, non attivo) |
 | `Missing authorization S_DEVELOP (display) for ...` | Manca l'autorizzazione di visualizzazione sugli oggetti di sviluppo |
-| `No source lines found or matching the filter: ...` | Nessuna riga, o nessuna con le keyword |
+| `No source lines found: ...` | Nessun sorgente leggibile |
 | `Enter a valid target directory.` | Cartella vuota o non valida |
 | `File download failed: ...` | Il PC ha rifiutato il file (cartella inesistente, permessi, conferma di sicurezza SAP GUI negata) |
 | `File saved: <file> (<n> lines)` | Fatto |

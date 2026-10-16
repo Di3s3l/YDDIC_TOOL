@@ -38,9 +38,9 @@ Errors travel as `LCX_DDIC_ERROR` carrying the final text; the report shows them
 
 **Include path (TABL).** `DD03P-ADMINFIELD` is the number of includes around each row. The list of open includes is cut to that level at every row, so an own field after an include block, or a field after a nested include, gets the right include. The older "last `.INCLUDE` seen" logic got these cases wrong.
 
-**Sources.** Main program, then its includes from `D010INC` in alphabetical order, each read with `READ REPORT`. No truncation of include names or lines. Unreadable includes are skipped but listed in the header, so a missing source is never mistaken for a non-existent one.
+**Sources.** Main program, then its includes from `D010INC` in alphabetical order, each read with `READ REPORT`. `D010INC` misses some nested includes (e.g. those of generated `$` includes and of enhancement includes), so every `INCLUDE <name>` statement in the sources read is followed too, until no new include appears; a set of seen names prevents duplicates and cycles. `INCLUDE TYPE/STRUCTURE/LIKE` and the class-pool `INCLUDE METHODS` are ignored. No truncation of include names or lines. Unreadable or missing includes are listed in the header, so a missing source is never mistaken for a non-existent one. An error is raised only if no source line is read at all.
 
-**Keyword filter.** Prepared once per export. Line upper-cased; a keyword containing `*` or `+` matches with `CP '*kw*'`, otherwise `CS`. Sign I: at least one must match; sign E: any match drops the line. The OPTION column is ignored; blank entries are dropped.
+**Keyword filter.** Prepared once per export. Line upper-cased; a keyword containing `*` or `+` matches with `CP '*kw*'`, otherwise `CS`. Sign I: at least one must match; sign E: any match drops the line. The OPTION column is ignored; blank entries are dropped. Zero matches still produce a file (header only).
 
 **File.** Directory normalized (one trailing `\`), name `<prefix>_<name>[_GREP].<ext>` with `/` → `_`, `GUI_DOWNLOAD` ASC, codepage 4110 (UTF-8), BOM.
 

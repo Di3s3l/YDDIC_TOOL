@@ -38,9 +38,9 @@ Gli errori viaggiano come `LCX_DDIC_ERROR` con il testo finale; il report li mos
 
 **Percorso degli include (TABL).** `DD03P-ADMINFIELD` è il numero di include che racchiudono ogni riga. L'elenco degli include aperti viene accorciato a quel livello a ogni riga: un campo proprio dopo un blocco include, o un campo dopo un include annidato, riceve l'include giusto. La vecchia logica "ultimo `.INCLUDE` incontrato" sbagliava questi casi.
 
-**Sorgenti.** Programma principale, poi i suoi include da `D010INC` in ordine alfabetico, letti con `READ REPORT`. Nessun troncamento di nomi o righe. Gli include non leggibili vengono saltati ma elencati in testata, così un sorgente mancante non viene scambiato per uno inesistente.
+**Sorgenti.** Programma principale, poi i suoi include da `D010INC` in ordine alfabetico, letti con `READ REPORT`. `D010INC` non contiene alcuni include annidati (per esempio quelli degli include generati `$` e degli include di enhancement), quindi si segue anche ogni istruzione `INCLUDE <nome>` dei sorgenti letti, finché non ne compaiono di nuovi; un insieme dei nomi già visti evita doppioni e cicli. `INCLUDE TYPE/STRUCTURE/LIKE` e l'`INCLUDE METHODS` dei class pool sono ignorati. Nessun troncamento di nomi o righe. Gli include non leggibili o inesistenti sono elencati in testata, così un sorgente mancante non viene scambiato per uno inesistente. L'errore scatta solo se non si legge nessuna riga.
 
-**Filtro per parola chiave.** Preparato una volta per export. Riga in maiuscolo; una parola con `*` o `+` confronta con `CP '*parola*'`, altrimenti `CS`. Segno I: almeno una deve corrispondere; segno E: una corrispondenza scarta la riga. La colonna OPTION è ignorata; le voci vuote sono scartate.
+**Filtro per parola chiave.** Preparato una volta per export. Riga in maiuscolo; una parola con `*` o `+` confronta con `CP '*parola*'`, altrimenti `CS`. Segno I: almeno una deve corrispondere; segno E: una corrispondenza scarta la riga. La colonna OPTION è ignorata; le voci vuote sono scartate. Zero corrispondenze producono comunque un file (sola testata).
 
 **File.** Cartella normalizzata (un solo `\` finale), nome `<prefisso>_<nome>[_GREP].<ext>` con `/` → `_`, `GUI_DOWNLOAD` ASC, codepage 4110 (UTF-8), BOM.
 

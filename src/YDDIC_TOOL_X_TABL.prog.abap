@@ -8,24 +8,31 @@ CLASS lcl_exp_tabl DEFINITION INHERITING FROM lcl_exporter_base FINAL.
     METHODS lif_exporter~validate REDEFINITION.
     METHODS lif_exporter~export   REDEFINITION.
 
-  PRIVATE SECTION.
+    " Public for the unit tests (YDDIC_TOOL_TEST)
     TYPES: BEGIN OF ty_incl_map,
              fieldname TYPE fieldname,
              include   TYPE string,
            END OF ty_incl_map,
            tt_incl_map TYPE HASHED TABLE OF ty_incl_map WITH UNIQUE KEY fieldname.
+    TYPES tt_dd03p TYPE STANDARD TABLE OF dd03p WITH DEFAULT KEY.
 
+    "! Field -> include path, from DD03P rows in position order
+    METHODS include_map
+      IMPORTING it_dd03p      TYPE tt_dd03p
+      RETURNING VALUE(rt_map) TYPE tt_incl_map.
+
+    "! CSV field: quoted, with doubled quotes, only if needed
+    METHODS csv_text
+      IMPORTING iv_text        TYPE csequence
+      RETURNING VALUE(rv_text) TYPE string.
+
+  PRIVATE SECTION.
     METHODS build_include_map
       IMPORTING iv_tabname    TYPE tabname
       RETURNING VALUE(rt_map) TYPE tt_incl_map.
 
     METHODS header_line
       RETURNING VALUE(rv_line) TYPE string.
-
-    "! CSV field: quoted, with doubled quotes, only if needed
-    METHODS csv_text
-      IMPORTING iv_text        TYPE csequence
-      RETURNING VALUE(rv_text) TYPE string.
 ENDCLASS.
 
 CLASS lcl_exp_tabl IMPLEMENTATION.
@@ -99,10 +106,7 @@ CLASS lcl_exp_tabl IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD build_include_map.
-    DATA: lt_dd03p TYPE STANDARD TABLE OF dd03p WITH DEFAULT KEY,
-          lt_path  TYPE string_table,
-          lv_depth TYPE i,
-          lv_from  TYPE i.
+    DATA lt_dd03p TYPE tt_dd03p.
 
     CALL FUNCTION 'DDIF_TABL_GET'
       EXPORTING
@@ -118,9 +122,17 @@ CLASS lcl_exp_tabl IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    rt_map = include_map( lt_dd03p ).
+  ENDMETHOD.
+
+  METHOD include_map.
+    DATA: lt_path  TYPE string_table,
+          lv_depth TYPE i,
+          lv_from  TYPE i.
+
     " ADMINFIELD = number of includes around the row; LT_PATH = open
     " includes, outermost first
-    LOOP AT lt_dd03p INTO DATA(ls_dd03p).
+    LOOP AT it_dd03p INTO DATA(ls_dd03p).
       lv_depth = 0.
       IF ls_dd03p-adminfield CA '123456789'.
         lv_depth = ls_dd03p-adminfield.

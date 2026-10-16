@@ -2,7 +2,7 @@
 
 <img src="assets/sap-s4hana-logo.png" alt="SAP S/4HANA" width="200"/>
 
-![Versione](https://img.shields.io/badge/versione-0.4-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen)
+![Versione](https://img.shields.io/badge/versione-0.5-blue) ![ABAP](https://img.shields.io/badge/ABAP-7.54-brightgreen)
 
 🇬🇧 [English version](README.md)
 
@@ -21,6 +21,7 @@ Pensato per dare a chi analizza o sviluppa senza accesso diretto al sistema (ad 
 - Help F4 sul nome dell'oggetto, per tipo
 - Output UTF-8 con BOM
 - Modulare: ogni tipo di oggetto è una classe locale in un proprio include; per aggiungere un tipo bastano un include e una riga nel registro
+- Test ABAP Unit per la logica che non dipende dai dati del sistema (filtro, riconoscimento degli include, nomi dei file, percorso degli include, virgolette nel CSV)
 
 ---
 
@@ -35,7 +36,7 @@ La cartella [`docs/it/`](docs/it/README.md) contiene istruzioni di installazione
 | File | Descrizione |
 |------|-------------|
 | `src/YDDIC_TOOL.prog.abap` | Programma principale |
-| `src/YDDIC_TOOL_*.prog.abap` | 8 include |
+| `src/YDDIC_TOOL_*.prog.abap` | 9 include (l'ultimo contiene i test ABAP Unit) |
 | `src/text-element.md` | Text elements — copiare i valori in SE38 |
 | `docs/` | Documentazione |
 

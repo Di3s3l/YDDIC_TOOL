@@ -13,10 +13,11 @@
 
 1. Creare il programma eseguibile `YDDIC_TOOL` e incollare `src/YDDIC_TOOL.prog.abap`. **Salvare senza attivare.**
 2. Per ogni riga `INCLUDE` del programma principale, nell'ordine, creare l'include (tipo *Programma include*) e incollare il file corrispondente:
-   `_TOP`, `_BASE`, `_X_TABL`, `_X_FUNC`, `_X_PROG`, `_X_CLAS`, `_REG`, `_SCR`. Salvare senza attivare.
-3. Attivare il programma principale e **tutti gli 8 include insieme** (selezionarli tutti nell'elenco degli oggetti inattivi).
+   `_TOP`, `_BASE`, `_X_TABL`, `_X_FUNC`, `_X_PROG`, `_X_CLAS`, `_REG`, `_SCR`, `_TEST`. Salvare senza attivare.
+3. Attivare il programma principale e **tutti i 9 include insieme** (selezionarli tutti nell'elenco degli oggetti inattivi).
 4. Inserire gli elementi di testo di [`src/text-element.md`](../../src/text-element.md) e attivarli.
-5. Facoltativo: transazione `YDDIC_TOOL` in **SE93** — *Programma e schermata di selezione (transazione report)*, programma `YDDIC_TOOL`, schermata `1000`.
+5. Controllo: nell'editor del programma principale **Ctrl+Shift+F10** esegue i test di unità; devono essere tutti verdi.
+6. Facoltativo: transazione `YDDIC_TOOL` in **SE93** — *Programma e schermata di selezione (transazione report)*, programma `YDDIC_TOOL`, schermata `1000`.
 
 > Gli elementi di testo **non** sono nei file sorgente: vanno ricreati in ogni sistema.
 

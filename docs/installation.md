@@ -13,10 +13,11 @@
 
 1. Create the executable program `YDDIC_TOOL` and paste `src/YDDIC_TOOL.prog.abap`. **Save without activating.**
 2. For each `INCLUDE` line of the main program, in order, create the include (type *Include program*) and paste the matching file:
-   `_TOP`, `_BASE`, `_X_TABL`, `_X_FUNC`, `_X_PROG`, `_X_CLAS`, `_REG`, `_SCR`. Save without activating.
-3. Activate the main program and **all 8 includes together** (select them all in the inactive objects list).
+   `_TOP`, `_BASE`, `_X_TABL`, `_X_FUNC`, `_X_PROG`, `_X_CLAS`, `_REG`, `_SCR`, `_TEST`. Save without activating.
+3. Activate the main program and **all 9 includes together** (select them all in the inactive objects list).
 4. Maintain the text elements from [`src/text-element.md`](../src/text-element.md) and activate them.
-5. Optional: transaction `YDDIC_TOOL` in **SE93** — *Program and selection screen (report transaction)*, program `YDDIC_TOOL`, screen `1000`.
+5. Check: in the editor of the main program, **Ctrl+Shift+F10** runs the unit tests; all must be green.
+6. Optional: transaction `YDDIC_TOOL` in **SE93** — *Program and selection screen (report transaction)*, program `YDDIC_TOOL`, screen `1000`.
 
 > Text elements are **not** part of the source files: recreate them in each system.
 

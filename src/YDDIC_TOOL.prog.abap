@@ -1,5 +1,5 @@
 *&---------------------------------------------------------------------*
-*& Report YDDIC_TOOL                                           v0.4
+*& Report YDDIC_TOOL                                           v0.5
 *& Export of SAP repository objects (table fields, function group,
 *& program, class sources) to a file on the PC.
 *& Transaction YDDIC_TOOL. Design: docs/technical-notes.md
@@ -14,6 +14,7 @@ INCLUDE yddic_tool_x_prog.
 INCLUDE yddic_tool_x_clas.
 INCLUDE yddic_tool_reg.
 INCLUDE yddic_tool_scr.
+INCLUDE yddic_tool_test.
 
 INITIALIZATION.
   lcl_screen=>initialization( ).

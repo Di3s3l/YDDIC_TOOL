@@ -12,6 +12,7 @@ YDDIC_TOOL     report events → LCL_SCREEN
  _X_TABL _X_FUNC _X_PROG _X_CLAS     one module per object type
  _REG          LCL_REGISTRY: the only list of modules
  _SCR          selection screen + LCL_SCREEN (controller)
+ _TEST         ABAP Unit test classes
 ```
 
 The include order is binding: local classes must be defined before use. A TOP include holds declarations only, so the exception class is implemented in `_BASE`.
@@ -46,11 +47,24 @@ Errors travel as `LCX_DDIC_ERROR` carrying the final text; the report shows them
 
 **Selection screen.** `P_NAME`/`P_PATH` are not `OBLIGATORY` (the check would fire on every listbox change): they are flagged as required and checked in code, again at `START-OF-SELECTION`.
 
+## Unit Tests
+
+`YDDIC_TOOL_TEST` holds three test classes (`RISK LEVEL HARMLESS`, `DURATION SHORT`), run with Ctrl+Shift+F10:
+
+| Class | Covers |
+|-------|--------|
+| `LTC_SOURCE_READER` | Keyword filter (inclusions, exclusions, wildcards, case, blank entries); recognition of `INCLUDE` statements and of look-alikes (`INCLUDE TYPE/STRUCTURE/LIKE/METHODS`, `INCLUDE =`, comments); header label width |
+| `LTC_FILE_WRITER` | Directory normalization; file name with namespace and `_GREP`; error on a blank directory |
+| `LTC_EXP_TABL` | Include path from hand-built `DD03P` rows (nested include, field after a nested include, own field after an include block); CSV quoting |
+
+To be testable, these methods are public: `prepare_filter`, `matches`, `included_name` (source reader) and `include_map`, `csv_text` (TABL module); `include_map` works on `DD03P` rows, separate from the `DDIF_TABL_GET` call. Reading system data (sources, DDIC) is not unit-tested: it is checked with real exports.
+
 ## Adding a Module
 
 1. New include `YDDIC_TOOL_X_<TYPE>` with `CLASS lcl_exp_<type> DEFINITION INHERITING FROM lcl_exporter_base FINAL`, redefining `get_info`, `validate`, `export` (helpers: `check_length`, `check_auth`, `lcl_source_reader=>read`).
 2. `INCLUDE yddic_tool_x_<type>.` in the main program, before `YDDIC_TOOL_REG`.
 3. `( NEW lcl_exp_<type>( ) )` in `LCL_REGISTRY=>GET_ALL` (list order = listbox order).
 4. A text symbol `T05`… for the listbox text.
+5. Unit tests for any logic of the module that does not read the system.
 
 Selection screen, file naming and download do not change.

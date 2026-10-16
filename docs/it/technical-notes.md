@@ -12,6 +12,7 @@ YDDIC_TOOL     eventi del report → LCL_SCREEN
  _X_TABL _X_FUNC _X_PROG _X_CLAS     un modulo per tipo di oggetto
  _REG          LCL_REGISTRY: unico elenco dei moduli
  _SCR          selection screen + LCL_SCREEN (controller)
+ _TEST         classi di test ABAP Unit
 ```
 
 L'ordine degli include è vincolante: le classi locali vanno definite prima dell'uso. Un include TOP contiene solo dichiarazioni, perciò la classe di eccezione è implementata in `_BASE`.
@@ -46,11 +47,24 @@ Gli errori viaggiano come `LCX_DDIC_ERROR` con il testo finale; il report li mos
 
 **Selection screen.** `P_NAME`/`P_PATH` non sono `OBLIGATORY` (il controllo scatterebbe a ogni cambio della listbox): sono segnati come obbligatori e controllati nel codice, di nuovo a `START-OF-SELECTION`.
 
+## Test di unità
+
+`YDDIC_TOOL_TEST` contiene tre classi di test (`RISK LEVEL HARMLESS`, `DURATION SHORT`), eseguite con Ctrl+Shift+F10:
+
+| Classe | Copre |
+|--------|-------|
+| `LTC_SOURCE_READER` | Filtro per parola chiave (inclusioni, esclusioni, jolly, maiuscole, voci vuote); riconoscimento delle istruzioni `INCLUDE` e dei casi simili da scartare (`INCLUDE TYPE/STRUCTURE/LIKE/METHODS`, `INCLUDE =`, commenti); larghezza delle etichette di testata |
+| `LTC_FILE_WRITER` | Normalizzazione della cartella; nome del file con namespace e `_GREP`; errore con cartella vuota |
+| `LTC_EXP_TABL` | Percorso degli include da righe `DD03P` costruite a mano (include annidato, campo dopo un include annidato, campo proprio dopo un blocco include); virgolette nel CSV |
+
+Per essere testabili questi metodi sono pubblici: `prepare_filter`, `matches`, `included_name` (lettore dei sorgenti) e `include_map`, `csv_text` (modulo TABL); `include_map` lavora sulle righe `DD03P`, separato dalla chiamata a `DDIF_TABL_GET`. La lettura dei dati del sistema (sorgenti, DDIC) non ha test di unità: si verifica con export reali.
+
 ## Aggiungere un modulo
 
 1. Nuovo include `YDDIC_TOOL_X_<TIPO>` con `CLASS lcl_exp_<tipo> DEFINITION INHERITING FROM lcl_exporter_base FINAL`, che ridefinisce `get_info`, `validate`, `export` (aiuti: `check_length`, `check_auth`, `lcl_source_reader=>read`).
 2. `INCLUDE yddic_tool_x_<tipo>.` nel programma principale, prima di `YDDIC_TOOL_REG`.
 3. `( NEW lcl_exp_<tipo>( ) )` in `LCL_REGISTRY=>GET_ALL` (ordine dell'elenco = ordine della listbox).
 4. Un simbolo di testo `T05`… per il testo della listbox.
+5. Test di unità per la logica del modulo che non legge il sistema.
 
 Selection screen, nome del file e download non cambiano.

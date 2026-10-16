@@ -99,7 +99,7 @@ CLASS lcl_source_reader DEFINITION FINAL.
                 iv_value       TYPE csequence
       RETURNING VALUE(rv_line) TYPE string.
 
-  PRIVATE SECTION.
+    " Public for the unit tests (YDDIC_TOOL_TEST)
     TYPES: BEGIN OF ty_pattern,
              exclude TYPE abap_bool,
              generic TYPE abap_bool,
@@ -117,14 +117,15 @@ CLASS lcl_source_reader DEFINITION FINAL.
                 it_patterns     TYPE tt_pattern
       RETURNING VALUE(rv_match) TYPE abap_bool.
 
-    CLASS-METHODS filter_text
-      IMPORTING it_patterns    TYPE tt_pattern
-      RETURNING VALUE(rv_text) TYPE string.
-
     "! Include named by an INCLUDE statement on this line, initial if none
     CLASS-METHODS included_name
       IMPORTING iv_line        TYPE string
       RETURNING VALUE(rv_name) TYPE progname.
+
+  PRIVATE SECTION.
+    CLASS-METHODS filter_text
+      IMPORTING it_patterns    TYPE tt_pattern
+      RETURNING VALUE(rv_text) TYPE string.
 
     CLASS-METHODS add_to_list
       IMPORTING iv_name TYPE csequence
